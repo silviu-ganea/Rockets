@@ -37,7 +37,7 @@ namespace TopDownShooter
             cam.transform.position = new Vector3(0f, 0f, -10f);
             var camCtrl = cam.gameObject.GetComponent<TopDownShooter.Rendering.CameraController>();
             if (camCtrl == null) camCtrl = cam.gameObject.AddComponent<TopDownShooter.Rendering.CameraController>();
-            camCtrl.OrthoSize = 12f;
+            camCtrl.OrthoSize = 36f;
 
             // Arena
             if (DrawArenaLines) CreateArenaLines();
