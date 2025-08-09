@@ -25,19 +25,22 @@ namespace TopDownShooter
             {
                 var camGO = new GameObject("MainCamera");
                 cam = camGO.AddComponent<Camera>();
-                camGO.tag = "MainCamera";
+                cam.tag = "MainCamera";
             }
-            cam.orthographic = true;
-            cam.orthographicSize = 8f;
-            cam.clearFlags = CameraClearFlags.SolidColor;
-            cam.backgroundColor = new Color(0.06f, 0.07f, 0.1f);
             cam.transform.position = new Vector3(0f, 0f, -10f);
+            var camCtrl = cam.gameObject.GetComponent<TopDownShooter.Rendering.CameraController>();
+            if (camCtrl == null) camCtrl = cam.gameObject.AddComponent<TopDownShooter.Rendering.CameraController>();
+            camCtrl.OrthoSize = 12f;
 
             // Arena
             CreateArenaLines();
 
             // Player
             var player = CreatePlayer();
+            camCtrl.Target = player.transform;
+            var bg = new GameObject("ParallaxBackground");
+            var par = bg.AddComponent<TopDownShooter.Rendering.ParallaxBackground>();
+            par.Follow = player.transform;
 
             // Bullets + pool
             var bulletPrefab = CreateBulletPrefab();
