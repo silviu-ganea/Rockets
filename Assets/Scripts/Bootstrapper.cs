@@ -19,14 +19,19 @@ namespace TopDownShooter
         {
             Application.targetFrameRate = 60;
 
-            // Camera
-            var camGO = new GameObject("MainCamera");
-            var cam = camGO.AddComponent<Camera>();
+            // Camera (reuse if exists)
+            Camera cam = Camera.main;
+            if (cam == null)
+            {
+                var camGO = new GameObject("MainCamera");
+                cam = camGO.AddComponent<Camera>();
+                camGO.tag = "MainCamera";
+            }
             cam.orthographic = true;
             cam.orthographicSize = 8f;
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.backgroundColor = new Color(0.06f, 0.07f, 0.1f);
-            camGO.tag = "MainCamera";
+            cam.transform.position = new Vector3(0f, 0f, -10f);
 
             // Arena
             CreateArenaLines();

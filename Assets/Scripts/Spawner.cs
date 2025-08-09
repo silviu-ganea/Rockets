@@ -44,6 +44,7 @@ namespace TopDownShooter
             };
 
             var enemy = Instantiate(EnemyPrefab, pos, Quaternion.identity);
+            enemy.SetActive(true);
             var ec = enemy.GetComponent<EnemyController>();
             ec.Init(Player, this, Config.enemyHP, Config.enemySpeed);
         }
