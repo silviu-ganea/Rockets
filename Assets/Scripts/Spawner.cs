@@ -51,6 +51,7 @@ namespace TopDownShooter
 
         public void OnEnemyKilled(EnemyController enemy, Vector3 where)
         {
+            FindObjectOfType<TopDownShooter.Core.GameManager>()?.AddScore(100);
             if (Random.value < Config.powerupDropChance)
             {
                 Instantiate(PowerUpPrefab, where, Quaternion.identity);

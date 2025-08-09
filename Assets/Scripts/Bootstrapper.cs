@@ -55,6 +55,10 @@ namespace TopDownShooter
             // HUD
             _hud = CreateHUD();
             _hud.Bind(player);
+
+            var gmGO = new GameObject("GameManager");
+            var gm = gmGO.AddComponent<TopDownShooter.Core.GameManager>();
+            gm.Bind(_hud, player);
         }
 
         private GameConfig ConfigOrDefault()
@@ -137,6 +141,7 @@ namespace TopDownShooter
 
             var mk = CreateText(canvasGO.transform, new Vector2(12, -12), "MK 1", 20);
             var score = CreateText(canvasGO.transform, new Vector2(12, -36), "0", 20);
+            var lives = CreateText(canvasGO.transform, new Vector2(12, -60), "❤ 3", 20);
 
             var hpGO = new GameObject("HPBar");
             hpGO.transform.SetParent(canvasGO.transform, false);
@@ -182,9 +187,25 @@ namespace TopDownShooter
             slider.direction = Slider.Direction.LeftToRight;
 
             var hud = canvasGO.AddComponent<HUDController>();
+            var go = new GameObject("GameOver");
+            go.transform.SetParent(canvasGO.transform, false);
+            var gorect = go.AddComponent<RectTransform>();
+            gorect.anchorMin = new Vector2(0,0); gorect.anchorMax = new Vector2(1,1);
+            gorect.offsetMin = gorect.offsetMax = Vector2.zero;
+            var goimg = go.AddComponent<Image>(); goimg.color = new Color(0,0,0,0.6f);
+            var gotxt = CreateText(go.transform, new Vector2(0, -20), "GAME OVER", 48);
+            gotxt.GetComponent<UnityEngine.UI.Text>().alignment = TextAnchor.MiddleCenter;
+            var trect = gotxt.GetComponent<RectTransform>();
+            trect.anchorMin = trect.anchorMax = new Vector2(0.5f, 0.5f);
+            trect.pivot = new Vector2(0.5f, 0.5f);
+            trect.anchoredPosition = Vector2.zero;
+            go.SetActive(false);
+
             hud.HpBar = slider;
             hud.ScoreText = score.GetComponent<UnityEngine.UI.Text>();
             hud.MKText = mk.GetComponent<UnityEngine.UI.Text>();
+            hud.LivesText = lives.GetComponent<UnityEngine.UI.Text>();
+            hud.GameOverPanel = go;
             return hud;
         }
 
