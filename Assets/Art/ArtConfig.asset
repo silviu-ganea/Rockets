@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccf93b9547b447c4486f27804f613ce3, type: 3}
   m_Name: ArtConfig
   m_EditorClassIdentifier: 
-  playerShip: {fileID: 0}
+  playerShip: {fileID: 1544977667909174819, guid: b904cc882e1954643b51d1b0239c0fcc, type: 3}
   bullet: {fileID: 0}
   powerup: {fileID: 0}
   enemyShips: []
