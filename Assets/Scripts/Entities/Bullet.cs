@@ -29,7 +29,7 @@ namespace TopDownShooter.Entities
         public void Fire(Vector2 position, Vector2 dir, float speed)
         {
             transform.position = position;
-            _rb.velocity = dir.normalized * speed;
+            _rb.linearVelocity = dir.normalized * speed;
             _timer = 0f;
         }
 

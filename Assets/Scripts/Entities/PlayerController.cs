@@ -61,7 +61,7 @@ namespace TopDownShooter.Entities
             }
             var v = new Vector2(x, y);
             if (v.sqrMagnitude > 1f) v.Normalize();
-            _rb.velocity = v * MoveSpeed;
+            _rb.linearVelocity = v * MoveSpeed;
 
             Vector3 mouseScreen = mouse != null ? (Vector3)mouse.position.ReadValue() : Input.mousePosition;
             var mouseWorld = _cam.ScreenToWorldPoint(mouseScreen);

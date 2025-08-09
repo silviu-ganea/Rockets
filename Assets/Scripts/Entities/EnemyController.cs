@@ -17,7 +17,7 @@ namespace TopDownShooter.Entities
         {
             _rb = GetComponent<Rigidbody2D>();
             _rb.gravityScale = 0f;
-            _rb.drag = 0f;
+            _rb.linearDamping = 0f;
             var col = GetComponent<CircleCollider2D>();
             col.isTrigger = true;
             col.radius = 0.35f;
@@ -35,7 +35,7 @@ namespace TopDownShooter.Entities
         {
             if (_target == null) return;
             var dir = (_target.position - transform.position).normalized;
-            _rb.velocity = dir * Speed;
+            _rb.linearVelocity = dir * Speed;
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle - 90f);
         }
