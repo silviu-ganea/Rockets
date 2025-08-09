@@ -11,6 +11,11 @@ namespace TopDownShooter
     {
         // Optional: drag a ScriptableObject GameConfig; if null, a default is created at runtime
         public GameConfig Config;
+
+        // From ArtConfig branch
+        public ArtConfig Art;
+
+        // From toggles branch
         public bool SpawnParallax = false;
         public bool DrawArenaLines = false;
 
@@ -40,6 +45,8 @@ namespace TopDownShooter
             // Player
             var player = CreatePlayer();
             camCtrl.Target = player.transform;
+
+            // Optional parallax (disabled by default)
             if (SpawnParallax)
             {
                 var bg = new GameObject("ParallaxBackground");
@@ -82,7 +89,8 @@ namespace TopDownShooter
             go.transform.position = Vector3.zero;
 
             var sr = go.AddComponent<SpriteRenderer>();
-            sr.sprite = MakeCircleSprite(new Color(1f, 0.92f, 0.35f), 64); // yellow-ish ship
+            if (Art != null && Art.playerShip != null) sr.sprite = Art.playerShip;
+            else sr.sprite = MakeCircleSprite(new Color(1f, 0.92f, 0.35f), 64);
             sr.sortingOrder = 10;
 
             var pc = go.AddComponent<PlayerController>();
@@ -96,7 +104,9 @@ namespace TopDownShooter
         {
             var go = new GameObject("EnemyPrefab");
             var sr = go.AddComponent<SpriteRenderer>();
-            sr.sprite = MakeTriangleSprite(new Color(0.95f, 0.45f, 0.35f), 64); // reddish enemy
+            var enemySprite = TopDownShooter.Core.Art.PickEnemy(Art);
+            if (enemySprite != null) sr.sprite = enemySprite;
+            else sr.sprite = MakeTriangleSprite(new Color(0.95f, 0.45f, 0.35f), 64);
             sr.sortingOrder = 5;
 
             go.AddComponent<Rigidbody2D>();
@@ -112,7 +122,8 @@ namespace TopDownShooter
         {
             var go = new GameObject("PowerUpPrefab");
             var sr = go.AddComponent<SpriteRenderer>();
-            sr.sprite = MakeDiamondSprite(new Color(1f, 0.95f, 0.4f), 64); // yellow MK orb
+            if (Art != null && Art.powerup != null) sr.sprite = Art.powerup;
+            else sr.sprite = MakeDiamondSprite(new Color(1f, 0.95f, 0.4f), 64);
             sr.sortingOrder = 6;
 
             go.AddComponent<CircleCollider2D>();
@@ -127,7 +138,8 @@ namespace TopDownShooter
         {
             var go = new GameObject("BulletPrefab");
             var sr = go.AddComponent<SpriteRenderer>();
-            sr.sprite = MakeCircleSprite(new Color(1f, 1f, 0.8f), 32);
+            if (Art != null && Art.bullet != null) sr.sprite = Art.bullet;
+            else sr.sprite = MakeCircleSprite(new Color(1f, 1f, 0.8f), 32);
             sr.sortingOrder = 8;
 
             var b = go.AddComponent<Bullet>();
