@@ -34,19 +34,26 @@ namespace TopDownShooter
             var halfW = Config.arenaSize.x * 0.5f;
             var halfH = Config.arenaSize.y * 0.5f;
 
-            // random edge spawn
-            var edge = Random.Range(0, 4);
-            Vector2 pos = edge switch
+            Vector2 pos = Vector2.zero;
+            const int maxTries = 8;
+            int tries = 0;
+            do
             {
-                0 => new Vector2(-halfW, Random.Range(-halfH, halfH)),
-                1 => new Vector2(halfW, Random.Range(-halfH, halfH)),
-                2 => new Vector2(Random.Range(-halfW, halfW), halfH),
-                _ => new Vector2(Random.Range(-halfW, halfW), -halfH),
-            };
+                var edge = Random.Range(0, 4);
+                pos = edge switch
+                {
+                    0 => new Vector2(-halfW, Random.Range(-halfH, halfH)),
+                    1 => new Vector2( halfW, Random.Range(-halfH, halfH)),
+                    2 => new Vector2(Random.Range(-halfW, halfW),  halfH),
+                    _ => new Vector2(Random.Range(-halfW, halfW), -halfH),
+                };
+                tries++;
+            } while (tries < maxTries && Player != null &&
+                     Vector2.Distance(pos, Player.position) < Config.minEnemySpawnDistance);
 
             var enemy = Instantiate(EnemyPrefab, pos, Quaternion.identity);
             enemy.SetActive(true);
-            var ec = enemy.GetComponent<EnemyController>();
+            var ec = enemy.GetComponent<Entities.EnemyController>();
             ec.Init(Player, this, Config.enemyHP, Config.enemySpeed);
         }
 

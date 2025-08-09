@@ -10,6 +10,8 @@ namespace TopDownShooter.Entities
         public float MoveSpeed = 7f;
         public float FireCooldown = 0.12f;
         public float BulletSpeed = 18f;
+        public float MuzzleOffset = 1.0f;    // distance from ship center to nose (world units)
+        public float LateralSpacing = 0.25f; // sideways offset for spread patterns
 
         public int HP { get; private set; }
         public int MKLevel { get; private set; } = 1;
@@ -110,25 +112,47 @@ namespace TopDownShooter.Entities
 
         private void Shoot(Vector2 dir)
         {
-            // MK levels fire patterns
-            if (MKLevel <= 1) FireOne(dir, 0f);
-            else if (MKLevel == 2) { FireOne(dir, -6f); FireOne(dir, 6f); }
-            else { FireOne(dir, -10f); FireOne(dir, 0f); FireOne(dir, 10f); }
+            var fwd = dir.normalized;
+            if (MKLevel <= 1)
+            {
+                FireOne(fwd, 0f);
+            }
+            else if (MKLevel == 2)
+            {
+                FireOne(fwd, -6f);
+                FireOne(fwd,  6f);
+            }
+            else
+            {
+                FireOne(fwd, -10f);
+                FireOne(fwd,   0f);
+                FireOne(fwd,  10f);
+            }
         }
 
-        private void FireOne(Vector2 dir, float spreadDeg)
+        private void FireOne(Vector2 fwd, float spreadDeg)
         {
-            var rad = spreadDeg * Mathf.Deg2Rad;
-            var spreadDir = new Vector2(
-                dir.x * Mathf.Cos(rad) - dir.y * Mathf.Sin(rad),
-                dir.x * Mathf.Sin(rad) + dir.y * Mathf.Cos(rad)
-            );
+            // Perpendicular unit vector (right-hand)
+            var right = new Vector2(-fwd.y, fwd.x);
+
+            float rad = spreadDeg * Mathf.Deg2Rad;
+
+            // Rotate forward by spread angle
+            var dir = new Vector2(
+                fwd.x * Mathf.Cos(rad) - fwd.y * Mathf.Sin(rad),
+                fwd.x * Mathf.Sin(rad) + fwd.y * Mathf.Cos(rad)
+            ).normalized;
+
+            // Start from the NOSE, with a tiny lateral offset for spread
+            float lateral = Mathf.Sin(rad) * LateralSpacing;
+            Vector3 spawnPos = transform.position + (Vector3)(fwd * MuzzleOffset + right * lateral);
 
             var bullet = _bulletPool.Get();
             bullet.Init(_bulletPool);
-            bullet.transform.position = transform.position + (Vector3)(spreadDir * 0.8f);
-            bullet.GetComponent<SpriteRenderer>().color = new Color(1f, 0.95f, 0.3f, 1f);
-            bullet.Fire(bullet.transform.position, spreadDir, BulletSpeed);
+            bullet.transform.position = spawnPos;
+            var sr = bullet.GetComponent<SpriteRenderer>();
+            if (sr != null) sr.color = new Color(1f, 0.95f, 0.3f, 1f);
+            bullet.Fire(spawnPos, dir, BulletSpeed);
         }
 
         public void TakeDamage(int dmg)
