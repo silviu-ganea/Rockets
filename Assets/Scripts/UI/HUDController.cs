@@ -9,8 +9,8 @@ namespace TopDownShooter.UI
         public Slider HpBar;
         public Text   ScoreText;
         public Text   MKText;
-
-        private int _score;
+        public Text   LivesText;
+        public GameObject GameOverPanel;
 
         public void Bind(PlayerController player)
         {
@@ -22,16 +22,16 @@ namespace TopDownShooter.UI
                     HpBar.value = hp;
                 }
             };
-            player.OnMKChanged += (mk) =>
-            {
-                if (MKText != null) MKText.text = $"MK {mk}";
-            };
+            player.OnMKChanged += (mk) => { if (MKText != null) MKText.text = $"MK {mk}"; };
         }
 
-        public void AddScore(int v = 1)
+        public void SetScore(int s) { if (ScoreText) ScoreText.text = s.ToString("N0"); }
+        public void SetLives(int l) { if (LivesText) LivesText.text = $"❤ {l}"; }
+
+        public void ShowGameOver(int score)
         {
-            _score += v;
-            if (ScoreText != null) ScoreText.text = _score.ToString("N0");
+            if (GameOverPanel != null) GameOverPanel.SetActive(true);
+            if (ScoreText) ScoreText.text = $"Score: {score:N0}";
         }
     }
 }
