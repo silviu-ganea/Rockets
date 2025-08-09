@@ -1,5 +1,6 @@
 using TopDownShooter.Core;
 using TopDownShooter.Entities;
+using TopDownShooter.Systems;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -49,11 +50,14 @@ namespace TopDownShooter
             ec.Init(Player, this, Config.enemyHP, Config.enemySpeed);
         }
 
-        public void OnEnemyKilled(EnemyController enemy, Vector3 where)
+        public void OnEnemyKilled(Entities.EnemyController enemy, Vector3 where)
         {
             if (Random.value < Config.powerupDropChance)
             {
-                Instantiate(PowerUpPrefab, where, Quaternion.identity);
+                var go = Instantiate(PowerUpPrefab, where, Quaternion.identity);
+                var pu = go.GetComponent<PowerUp>();
+                pu.Type = (PowerUpType)Random.Range(0, 4);
+                go.SetActive(true);
             }
         }
     }
