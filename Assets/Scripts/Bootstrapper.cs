@@ -37,7 +37,8 @@ namespace TopDownShooter
             cam.transform.position = new Vector3(0f, 0f, -10f);
             var camCtrl = cam.gameObject.GetComponent<TopDownShooter.Rendering.CameraController>();
             if (camCtrl == null) camCtrl = cam.gameObject.AddComponent<TopDownShooter.Rendering.CameraController>();
-            camCtrl.OrthoSize = 36f;
+            camCtrl.OrthoSize = 36f;   // wide
+            cam.orthographicSize = camCtrl.OrthoSize;
 
             // Arena
             if (DrawArenaLines) CreateArenaLines();
@@ -93,9 +94,7 @@ namespace TopDownShooter
             else sr.sprite = MakeCircleSprite(new Color(1f, 0.92f, 0.35f), 64);
             sr.sortingOrder = 10;
 
-            var pc = go.AddComponent<PlayerController>();
-            go.AddComponent<Rigidbody2D>();
-            go.AddComponent<CapsuleCollider2D>();
+            var pc = go.AddComponent<PlayerController>(); // Rigidbody2D & CapsuleCollider2D are required by the script
 
             return pc;
         }
@@ -109,9 +108,7 @@ namespace TopDownShooter
             else sr.sprite = MakeTriangleSprite(new Color(0.95f, 0.45f, 0.35f), 64);
             sr.sortingOrder = 5;
 
-            go.AddComponent<Rigidbody2D>();
-            go.AddComponent<CircleCollider2D>();
-            go.AddComponent<EnemyController>();
+            go.AddComponent<EnemyController>(); // RequireComponent on EnemyController will ensure needed components
 
             go.SetActive(false);
             go.transform.SetParent(this.transform);
@@ -142,9 +139,7 @@ namespace TopDownShooter
             else sr.sprite = MakeCircleSprite(new Color(1f, 1f, 0.8f), 32);
             sr.sortingOrder = 8;
 
-            var b = go.AddComponent<Bullet>();
-            go.AddComponent<Rigidbody2D>();
-            go.AddComponent<CircleCollider2D>();
+            var b = go.AddComponent<Bullet>(); // RequireComponent on Bullet will add needed components
 
             go.SetActive(false);
             go.transform.SetParent(this.transform);
@@ -240,7 +235,7 @@ namespace TopDownShooter
             rect.anchoredPosition = anchored;
             var text = go.AddComponent<UnityEngine.UI.Text>();
             text.text = content;
-            text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.fontSize = size;
             text.color = new Color(1f, 0.95f, 0.6f);
             text.alignment = TextAnchor.UpperLeft;
