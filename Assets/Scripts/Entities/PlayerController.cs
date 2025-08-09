@@ -11,7 +11,7 @@ namespace TopDownShooter.Entities
         public float FireCooldown = 0.12f;
         public float BulletSpeed = 18f;
         public float MuzzleOffset = 1.0f;    // distance from ship center to nose (world units)
-        public float LateralSpacing = 0.25f; // sideways offset for spread patterns
+        public float LateralSpacing = 0.25f; // sideways offset for spread
 
         public int HP { get; private set; }
         public int MKLevel { get; private set; } = 1;
@@ -33,6 +33,10 @@ namespace TopDownShooter.Entities
             col.isTrigger = true;
             col.direction = CapsuleDirection2D.Vertical;
             col.size = new Vector2(0.6f, 1.1f);
+
+            // MuzzleOffset/LateralSpacing defaults that work for most ships
+            if (MuzzleOffset <= 0f) MuzzleOffset = 1.0f;
+            if (LateralSpacing <= 0f) LateralSpacing = 0.25f;
         }
 
         public void Init(GameConfig cfg, ObjectPool<Bullet> bulletPool)
@@ -110,6 +114,7 @@ namespace TopDownShooter.Entities
 #endif
         }
 
+        
         private void Shoot(Vector2 dir)
         {
             var fwd = dir.normalized;
@@ -130,20 +135,21 @@ namespace TopDownShooter.Entities
             }
         }
 
+        
         private void FireOne(Vector2 fwd, float spreadDeg)
         {
-            // Perpendicular unit vector (right-hand)
+            // right vector perpendicular to forward
             var right = new Vector2(-fwd.y, fwd.x);
 
             float rad = spreadDeg * Mathf.Deg2Rad;
 
-            // Rotate forward by spread angle
+            // rotate forward by spread
             var dir = new Vector2(
                 fwd.x * Mathf.Cos(rad) - fwd.y * Mathf.Sin(rad),
                 fwd.x * Mathf.Sin(rad) + fwd.y * Mathf.Cos(rad)
             ).normalized;
 
-            // Start from the NOSE, with a tiny lateral offset for spread
+            // spawn at the NOSE, plus a small lateral offset for side shots
             float lateral = Mathf.Sin(rad) * LateralSpacing;
             Vector3 spawnPos = transform.position + (Vector3)(fwd * MuzzleOffset + right * lateral);
 
