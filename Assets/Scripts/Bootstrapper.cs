@@ -11,6 +11,8 @@ namespace TopDownShooter
     {
         // Optional: drag a ScriptableObject GameConfig; if null, a default is created at runtime
         public GameConfig Config;
+        public bool SpawnParallax = false;
+        public bool DrawArenaLines = false;
 
         private ObjectPool<Bullet> _bulletPool;
         private HUDController _hud;
@@ -33,14 +35,17 @@ namespace TopDownShooter
             camCtrl.OrthoSize = 12f;
 
             // Arena
-            CreateArenaLines();
+            if (DrawArenaLines) CreateArenaLines();
 
             // Player
             var player = CreatePlayer();
             camCtrl.Target = player.transform;
-            var bg = new GameObject("ParallaxBackground");
-            var par = bg.AddComponent<TopDownShooter.Rendering.ParallaxBackground>();
-            par.Follow = player.transform;
+            if (SpawnParallax)
+            {
+                var bg = new GameObject("ParallaxBackground");
+                var par = bg.AddComponent<TopDownShooter.Rendering.ParallaxBackground>();
+                par.Follow = player.transform;
+            }
 
             // Bullets + pool
             var bulletPrefab = CreateBulletPrefab();

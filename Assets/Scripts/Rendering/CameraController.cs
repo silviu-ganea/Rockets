@@ -18,7 +18,7 @@ namespace TopDownShooter.Rendering
                 _cam.orthographic = true;
                 _cam.orthographicSize = OrthoSize;
                 _cam.clearFlags = CameraClearFlags.SolidColor;
-                _cam.backgroundColor = new Color(0.06f, 0.07f, 0.1f);
+                _cam.backgroundColor = Color.black;
             }
         }
 
